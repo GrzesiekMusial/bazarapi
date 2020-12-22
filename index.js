@@ -1,19 +1,27 @@
 const config = require("config");
-const Joi = require("joi");
 const express = require("express");
 const helmet = require("helmet");
+const mongoose = require("mongoose");
+
+const app = express();
+app.use(express.json());
+app.use(helmet());
 
 const startupDebugger = require("debug")("app:startup");
 const dbDebugger = require("debug")("app:db");
 const morgan = require("morgan");
-const app = express();
 
-const products = require("./routes/products");
+const connectOptions = { useNewUrlParser: true };
+mongoose.set("useUnifiedTopology", true);
+mongoose
+    .connect("mongodb://localhost/bazar", connectOptions)
+    .then(() => console.log("connected to db"))
+    .catch((err) => console.log("couldnt connect to mongo db ", err));
+
+const products = require("./routes/products.js");
 const notices = require("./routes/notices");
 const categories = require("./routes/categories");
-
-app.use(express.json());
-app.use(helmet());
+const users = require("./routes/users");
 
 if (app.get("env") === "development") {
     app.use(morgan("tiny"));
@@ -27,6 +35,7 @@ app.get("/", (req, res) => {
 app.use("/products", products);
 app.use("/notices", notices);
 app.use("/categories", categories);
+app.use("/users", users);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => console.log(`new connection on port ${port}`));
