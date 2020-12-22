@@ -1,5 +1,5 @@
 const { Product, validateSchema } = require("../models/product");
-
+const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
 
@@ -10,7 +10,7 @@ router.get("/", async (req, res) => {
 });
 
 //SAVE PRODUCT
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
     const { error } = validateSchema(req.body);
 
     if (error) return res.status(400).send(error.details[0].message);

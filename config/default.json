@@ -2,5 +2,6 @@
     "name": "My express App.",
     "mail": {
         "host": "default-mail-server"
-    }
+    },
+    "jwtPrivateKey": ""
 }
