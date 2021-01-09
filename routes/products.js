@@ -1,65 +1,85 @@
-const { Product, validateSchema } = require("../models/product");
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
+const validate = require("../middleware/validation");
+const { Product } = require("../models/product");
+const { imageFilter, upload } = require("../methods/images");
+const { userCheck } = require("../methods/user");
 
-// GET PRODUCTS
-router.get("/", async (req, res) => {
-    const result = await Product.find().populate("author", "name email login");
-    res.send(result);
-});
-
-//SAVE PRODUCT
-router.post("/", auth, async (req, res) => {
-    const { error } = validateSchema(req.body);
-
-    if (error) return res.status(400).send(error.details[0].message);
-
-    const product = new Product(req.body);
-
-    try {
-        await product.validate();
-    } catch (ex) {
-        return res.status(400).send(ex);
-    }
-
-    await product.save();
-
-    res.send(product);
-});
-
-//EDIT PRODUCT
-router.put("/:id", async (req, res) => {
-    const product = await Product.findById(req.body._id);
+//GET PRODUCT
+router.get("/:id", async (req, res) => {
+    const product = await Product.findById(req.params.id)
+        .populate("author", "name email login")
+        .populate("category");
 
     if (!product)
         return res.status(404).send("Product with that id not exists!");
 
-    product.set(req.body);
+    res.send(product);
+});
 
-    try {
-        await product.validate();
-    } catch ({ message }) {
-        return res.status(400).send(message);
-    }
-
-    const result = await Product.findByIdAndUpdate(req.body._id, req.body, {
-        new: true,
-    });
-
+// GET PRODUCTS
+router.get("/", async (req, res) => {
+    const result = await Product.find()
+        .populate("category")
+        .populate("author", "name email login");
     res.send(result);
 });
 
+//SAVE PRODUCT
+router.post("/", [auth, upload, validate.validation()], async (req, res) => {
+    const newOne = req.body;
+    newOne.price = parseFloat(newOne.price, 2);
+
+    newOne.date = Date.now();
+    newOne.author = req.user._id;
+    newOne.images = await imageFilter(req.files);
+
+    const product = new Product(newOne);
+    await product.validate();
+    const result = await product.save();
+
+    res.status(201).send(result);
+});
+
+//EDIT PRODUCT
+router.put("/:id", [auth, upload, validate.validation()], async (req, res) => {
+    const edit = req.body;
+    edit.price = parseFloat(edit.price, 2);
+
+    const old = await Product.findById(edit._id);
+    if (!old) return res.status(404).send("Product with that id not exists!");
+
+    await userCheck(req.user._id, old.author._id);
+
+    edit.date = old.date;
+    edit.author = old.author;
+    edit.images = await imageFilter(req.files, req.body.images, old.images);
+
+    const result = await Product.findByIdAndUpdate(edit._id, edit, {
+        new: true,
+        useFindAndModify: false,
+    });
+
+    res.status(201).send(result);
+});
+
 //DELETE PRODUCT
-router.delete("/:id", async (req, res) => {
-    const product = await Product.findByIdAndRemove(req.params.id); // params
+router.delete("/:id", auth, async (req, res) => {
+    const product = await Product.findById(req.params.id); // params
+
     if (!product)
         return res
             .status(404)
             .send("Product with the givent id does not exist.");
 
-    const products = await Product.find();
-    res.send(products);
+    await userCheck(req.user._id, product.author._id);
+
+    imageFilter([], [], product.images);
+
+    const result = await Product.findByIdAndRemove(req.params.id); // params
+
+    res.status(200).send(result);
 });
 
 // const getProducts = async () => {

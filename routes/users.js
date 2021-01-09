@@ -8,8 +8,9 @@ const router = express.Router();
 
 //GET USER
 router.get("/me", auth, async (req, res) => {
-    const user = await User.findById(req.user._id).select("-password");
-    res.send(user);
+    const result = await User.findById(req.user._id).select("-password");
+    if (!result) return res.status(404).send("User not found!");
+    res.status(200).send(result);
 });
 
 //SAVE USER
@@ -26,17 +27,13 @@ router.post("/", async (req, res) => {
             .status(400)
             .send(
                 `User with that ${
-                    user.email === req.body.email ? "email" : "logn"
+                    user.email === req.body.email ? "email" : "login"
                 } already registered.`
             );
 
     user = new User(_.pick(req.body, ["name", "login", "email", "password"]));
 
-    try {
-        await user.validate();
-    } catch (ex) {
-        return res.status(400).send(ex);
-    }
+    await user.validate();
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
@@ -44,7 +41,10 @@ router.post("/", async (req, res) => {
 
     const token = user.generateAuthToken();
 
-    res.header("x-auth-token", token).send(_.pick(user, ["email", "login"]));
+    res.header("x-auth-token", token)
+        .header("access-control-expose-headers", "x-auth-token")
+        .status(201)
+        .send(_.pick(user, ["email", "login"]));
 });
 
 module.exports = router;

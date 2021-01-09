@@ -1,7 +1,7 @@
 {
-    "name": "My express App.",
-    "mail": {
-        "host": "default-mail-server"
-    },
-    "jwtPrivateKey": ""
+    "name": "Bazar.",
+    "db": "mongodb://localhost/bazar",
+    "port": "3000",
+    "jwtPrivateKey": "unsecureKey",
+    "requiresAuth": true
 }

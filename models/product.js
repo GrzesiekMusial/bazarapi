@@ -1,18 +1,21 @@
 const mongoose = require("mongoose");
 const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
 
 const Product = mongoose.model(
     "Product",
     new mongoose.Schema({
-        category: { type: String, required: true },
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
         },
-
+        category: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Category",
+        },
+        // images: [{ type: String }],
+        images: [{ type: Object }],
         date: { type: Date, default: Date.now },
-        price: String,
+        price: Number,
         title: { type: String, required: true, minlength: 3 },
         text: String,
     })
@@ -20,15 +23,18 @@ const Product = mongoose.model(
 
 const validateSchema = (product) => {
     const schema = {
-        author: Joi.objectId().required(),
+        author: Joi.objectId(),
         category: Joi.string().required(),
         date: Joi.date(),
         price: Joi.string(),
         title: Joi.string().required(),
         text: Joi.string(),
+        images: Joi.array().items(Joi.string()),
     };
 
     const result = Joi.validate(product, schema);
+
+    console.log(result);
     return result;
 };
 

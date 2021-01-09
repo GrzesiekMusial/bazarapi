@@ -1,69 +1,82 @@
-const { validateSchema, Notice } = require("../models/notice");
-
+const { Notice, validateSchema } = require("../models/notice");
+const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
+const validate = require("../middleware/validation");
+const { imageFilter, upload } = require("../methods/images");
+const { userCheck } = require("../methods/user");
 
-// GET NOTICES
-router.get("/", async (req, res) => {
-    const result = await Notice.find().populate("author", "name email login");
-    res.send(result);
-});
+//GET NOTICE
+router.get("/:id", async (req, res) => {
+    const notice = await Notice.findById(req.params.id)
+        .populate("author", "name email login")
+        .populate("category");
 
-//SAVE NOTICE
-router.post("/", async (req, res) => {
-    const { error } = validateSchema(req.body);
-
-    if (error) return res.status(400).send(error.details[0].message);
-
-    const notice = new Notice(req.body);
-
-    try {
-        await notice.validate();
-    } catch (ex) {
-        return res.status(400).send(ex);
-    }
-    await notice.save();
+    if (!notice) return res.status(404).send("Notice with that id not exists!");
 
     res.send(notice);
 });
 
-//EDIT NOTICE
-router.put("/:id", async (req, res) => {
-    const notice = await Notice.findById(req.body._id);
-
-    if (!notice) return res.status(404).send("Notice with that id not exists!");
-
-    notice.set(req.body);
-
-    try {
-        await notice.validate();
-    } catch ({ message }) {
-        return res.status(400).send(message);
-    }
-
-    const result = await Notice.findByIdAndUpdate(req.body._id, req.body, {
-        new: true,
-    });
-
+// GET NOTICES
+router.get("/", async (req, res) => {
+    const result = await Notice.find()
+        .populate("category")
+        .populate("author", "name email login");
     res.send(result);
 });
 
+//SAVE NOTICE
+router.post("/", [auth, upload, validate.validation()], async (req, res) => {
+    const newOne = req.body;
+
+    newOne.date = Date.now();
+    newOne.author = req.user._id;
+    newOne.images = await imageFilter(req.files);
+
+    const notice = new Notice(newOne);
+    await notice.validate();
+    const result = await notice.save();
+
+    res.status(201).send(result);
+});
+
+//EDIT NOTICE
+router.put("/:id", [auth, upload, validate.validation()], async (req, res) => {
+    const edit = req.body;
+
+    const old = await Notice.findById(edit._id);
+    if (!old) return res.status(404).send("Notice with that id not exists!");
+
+    await userCheck(req.user._id, old.author._id);
+
+    edit.date = old.date;
+    edit.author = old.author;
+    edit.images = await imageFilter(req.files, req.body.images, old.images);
+
+    const result = await Notice.findByIdAndUpdate(edit._id, edit, {
+        new: true,
+        useFindAndModify: false,
+    });
+
+    res.status(201).send(result);
+});
+
 //DELETE NOTICE
-router.delete("/:id", async (req, res) => {
-    const notice = await Notice.findByIdAndRemove(req.params.id); // params
+router.delete("/:id", auth, async (req, res) => {
+    const notice = await Notice.findById(req.params.id); // params
+
     if (!notice)
         return res
             .status(404)
             .send("Notice with the givent id does not exist.");
 
-    const notices = await Notice.find();
-    res.send(notices);
-});
+    await userCheck(req.user._id, notice.author._id);
 
-// const getNotices = async () => {
-//     // you can use operator to filtr find data (eg/negt/gte itd prefixed with $ ), pagination / limit
-//     const notices = await Notice.find({ authorId: "1" }).sort({ date: 1 });
-//     return notices;
-// };
+    imageFilter([], [], notice.images);
+
+    const result = await Notice.findByIdAndRemove(req.params.id); // params
+
+    res.status(200).send(result);
+});
 
 module.exports = router;

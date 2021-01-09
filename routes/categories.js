@@ -9,7 +9,7 @@ router.use(bodyParser.json());
 // GET CATEGORIES
 router.get("/", async (req, res) => {
     const result = await Category.find();
-    res.send(result);
+    res.status(200).send(result);
 });
 
 module.exports = router;

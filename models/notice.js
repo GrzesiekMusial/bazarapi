@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-
 const Joi = require("joi");
-Joi.objectId = require("joi-objectid")(Joi);
 
 const Notice = mongoose.model(
     "Notice",
@@ -13,6 +11,7 @@ const Notice = mongoose.model(
         date: { type: Date, default: Date.now },
         title: { type: String, required: true, minlength: 3 },
         text: String,
+        images: [{ type: String }],
     })
 );
 
@@ -22,6 +21,7 @@ const validateSchema = (notice) => {
         date: Joi.date(),
         title: Joi.string().required(),
         text: Joi.string(),
+        images: Joi.array().items(Joi.string()),
     };
 
     const result = Joi.validate(notice, schema);

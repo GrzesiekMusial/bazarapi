@@ -5,7 +5,6 @@ const _ = require("lodash");
 const express = require("express");
 const router = express.Router();
 
-//SAVE USER
 router.post("/", async (req, res) => {
     const { error } = validateSchema(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -21,7 +20,10 @@ router.post("/", async (req, res) => {
         return res.status(400).send("Invalid email or password!");
 
     const token = user.generateAuthToken();
-    res.send(token);
+
+    res.header("x-auth-token", token)
+        .header("access-control-expose-headers", "x-auth-token")
+        .send(_.pick(user, ["email", "login"]));
 });
 
 module.exports = router;
