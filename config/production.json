@@ -1,3 +1,6 @@
 {
-    "name": "Bazar App. - Production"
+    "name": "Bazar App. - Production",
+    "db": "bazar_db",
+    "port": "bazar_port",
+    "CLOUDINARY_URL": "bazar_cloudinary"
 }

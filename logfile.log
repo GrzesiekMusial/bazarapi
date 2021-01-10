@@ -68,3 +68,30 @@
 {"level":"info","message":"Connected to mongodb://localhost/bazar...","timestamp":"2021-01-09T22:19:05.835Z"}
 {"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-09T22:20:00.002Z"}
 {"level":"info","message":"Connected to mongodb://localhost/bazar...","timestamp":"2021-01-09T22:20:00.021Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-09T22:24:22.969Z"}
+{"level":"info","message":"Connected to mongodb://localhost/bazar...","timestamp":"2021-01-09T22:24:22.989Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-09T22:25:43.428Z"}
+{"level":"info","message":"Connected to mongodb://localhost/bazar...","timestamp":"2021-01-09T22:25:43.448Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-09T22:26:04.488Z"}
+{"level":"info","message":"Connected to mongodb://localhost/bazar...","timestamp":"2021-01-09T22:26:04.508Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-09T22:26:24.856Z"}
+{"level":"info","message":"Connected to mongodb://localhost/bazar...","timestamp":"2021-01-09T22:26:24.876Z"}
+{"level":"info","message":"Listening on port 5000...","timestamp":"2021-01-10T11:47:06.486Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T12:01:52.955Z"}
+{"level":"info","message":"Connected to mongodb+srv://Gregor1494:ZDddPJF6sU6et5g1@bazar.a4fa7.mongodb.net/bazar?retryWrites=true&w=majority...","timestamp":"2021-01-10T12:01:53.405Z"}
+{"message":"Cannot read property 'forEach' of undefined","stack":"TypeError: Cannot read property 'forEach' of undefined\n    at imageFilter (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\methods\\images.js:40:19)\n    at C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\routes\\notices.js:34:27\n    at newFn (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express-async-errors\\index.js:16:20)\n    at Layer.handle [as handle_request] (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express\\lib\\router\\route.js:137:13)\n    at C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\middleware\\validation.js:20:5\n    at newFn (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express-async-errors\\index.js:16:20)\n    at Layer.handle [as handle_request] (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express\\lib\\router\\route.js:137:13)\n    at multerMiddleware (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\multer\\lib\\make-middleware.js:18:41)\n    at newFn (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express-async-errors\\index.js:16:20)\n    at Layer.handle [as handle_request] (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at next (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express\\lib\\router\\route.js:137:13)\n    at module.exports (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\middleware\\auth.js:11:9)\n    at newFn (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express-async-errors\\index.js:16:20)\n    at Layer.handle [as handle_request] (C:\\dev\\TESTY\\TEST NATIVE\\bazar node\\node_modules\\express\\lib\\router\\layer.js:95:5)","level":"error","timestamp":"2021-01-10T12:04:29.974Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T12:09:40.621Z"}
+{"level":"info","message":"Connected to mongodb+srv://Gregor1494:ZDddPJF6sU6et5g1@bazar.a4fa7.mongodb.net/bazar?retryWrites=true&w=majority...","timestamp":"2021-01-10T12:09:41.083Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T12:22:01.754Z"}
+{"level":"info","message":"Connected to mongodb+srv://Gregor1494:ZDddPJF6sU6et5g1@bazar.a4fa7.mongodb.net/bazar?retryWrites=true&w=majority...","timestamp":"2021-01-10T12:22:02.014Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T13:34:36.488Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T15:04:41.598Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T15:04:46.069Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T15:05:19.168Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T15:05:43.145Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T15:06:01.856Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T15:13:43.597Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T15:14:37.437Z"}
+{"level":"info","message":"Connected to mongodb+srv://Gregor1494:ZDddPJF6sU6et5g1@bazar.a4fa7.mongodb.net/bazar?retryWrites=true&w=majority...","timestamp":"2021-01-10T15:14:37.850Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T15:14:43.255Z"}
+{"level":"info","message":"Listening on port 3000...","timestamp":"2021-01-10T15:16:26.865Z"}

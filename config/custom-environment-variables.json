@@ -1,3 +1,5 @@
 {
-    "jwtPrivateKey": "bazar_jwtPrivateKey"
+    "jwtPrivateKey": "bazar_jwtPrivateKey",
+    "db": "bazar_db",
+    "CLOUDINARY_URL": "bazar_cloudinary"
 }
