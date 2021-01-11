@@ -30,6 +30,7 @@ router.get("/", async (req, res) => {
 router.post("/", [auth, upload, validate.validation()], async (req, res) => {
     const newOne = req.body;
     newOne.price = parseFloat(newOne.price, 2);
+    console.log("FILES", req.files);
 
     newOne.date = Date.now();
     newOne.author = req.user._id;

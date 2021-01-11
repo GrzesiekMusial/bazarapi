@@ -1,31 +1,45 @@
 const fs = require("fs");
 var multer = require("multer");
+const config = require("config");
 const winston = require("winston");
+const cloudinary = require("cloudinary").v2;
+const path = require("path");
+
+cloudinary.config({
+    cloud_name: config.get("cloudinary_name"),
+    api_key: config.get("cloudinary_key"),
+    api_secret: config.get("cloudinary_secret"),
+});
 
 const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "public/images");
+    destination: function (req, file, cb) {
+        cb(null, path.resolve(__dirname, "upload"));
     },
-    filename: (req, file, cb) => {
-        cb(
-            null,
-            req.user._id + "-" + file.fieldname + "-" + Date.now() + ".png"
-        );
+    filename: function (req, file, cb) {
+        cb(null, file.originalname);
     },
 });
 
 const imageDelete = async (id) => {
-    const pathToFile = "public/images/";
-    fs.unlink(`${pathToFile}${id}`, function (err) {
+    await cloudinary.uploader.destroy(id, function (err) {
         if (err) winston.error(`Image not exists! ${id}`);
     });
+};
+
+const imagesUpload = async (images) => {
+    const arr = [];
+    for (const img of images) {
+        const result = await cloudinary.uploader.upload(img.path);
+        arr.push(result.public_id);
+    }
+    return arr;
 };
 
 const imageFilter = async (fileImg, freshImg = null, oldImg = null) => {
     freshImg = typeof freshImg === "string" ? freshImg.split(",") : [];
 
     if (oldImg) {
-        await oldImg.forEach(async (img) => {
+        for (const img of oldImg) {
             if (freshImg.length === 0) await imageDelete(img);
             else
                 for (key in freshImg) {
@@ -34,10 +48,10 @@ const imageFilter = async (fileImg, freshImg = null, oldImg = null) => {
                         await imageDelete(img);
                     }
                 }
-        });
+        }
     }
 
-    await fileImg.forEach((file) => freshImg.push(file.filename));
+    freshImg = await imagesUpload(fileImg);
 
     return freshImg;
 };

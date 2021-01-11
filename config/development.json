@@ -2,5 +2,7 @@
     "name": "Bazar App. - Production",
     "db": "bazar_db",
     "port": "bazar_port",
-    "CLOUDINARY_URL": "bazar_cloudinary"
+    "cloudinary_name": "cloudinary_name",
+    "cloudinary_key": "cloudinary_key",
+    "cloudinary_secret": "cloudinary_secret"
 }
