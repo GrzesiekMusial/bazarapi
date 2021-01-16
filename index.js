@@ -9,6 +9,7 @@ require("./startup/routes")(app);
 require("./startup/db")();
 require("./startup/config")();
 require("./startup/validation")();
+require("./startup/prod")(app);
 
 app.use(express.static(path.join(__dirname, "public")));
 
