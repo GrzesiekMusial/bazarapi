@@ -9,7 +9,7 @@ const { userCheck } = require("../methods/user");
 //GET NOTICE
 router.get("/:id", async (req, res) => {
     const notice = await Notice.findById(req.params.id)
-        .populate("author", "name email login")
+        .populate("author", "login email")
         .populate("category");
 
     if (!notice) return res.status(404).send("Notice with that id not exists!");
@@ -21,7 +21,7 @@ router.get("/:id", async (req, res) => {
 router.get("/", async (req, res) => {
     const result = await Notice.find()
         .populate("category")
-        .populate("author", "name email login");
+        .populate("author", "login email");
     res.send(result);
 });
 
@@ -37,7 +37,8 @@ router.post("/", [auth, upload, validate.validation()], async (req, res) => {
     await notice.validate();
     const result = await notice.save();
 
-    res.status(201).send(result);
+    const author = { _id: req.user._id, login: req.user.login };
+    res.status(201).send({ item: result, author: author });
 });
 
 //EDIT NOTICE
@@ -58,19 +59,21 @@ router.put("/:id", [auth, upload, validate.validation()], async (req, res) => {
         useFindAndModify: false,
     });
 
-    res.status(201).send(result);
+    const author = { _id: req.user._id, login: req.user.login };
+    res.status(201).send({ item: result, author: author });
 });
 
 //DELETE NOTICE
 router.delete("/:id", auth, async (req, res) => {
     const notice = await Notice.findById(req.params.id); // params
 
-    if (!notice)
+    if (!notice) {
         return res
             .status(404)
             .send("Notice with the givent id does not exist.");
+    }
 
-    await userCheck(req.user._id, notice.author._id);
+    await userCheck(req.user._id, notice.author._id, res);
 
     imageFilter([], [], notice.images);
 

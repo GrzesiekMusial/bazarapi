@@ -20,7 +20,7 @@ const validateSchema = (notice) => {
         author: Joi.objectId().required(),
         date: Joi.date(),
         title: Joi.string().required(),
-        text: Joi.string(),
+        text: Joi.string().allow(""),
         images: Joi.array().items(Joi.string()),
     };
 

@@ -7,16 +7,16 @@ const schema = {
     date: Joi.string(),
     price: Joi.string(),
     title: Joi.string().required(),
-    text: Joi.string(),
-    images: Joi.string(),
+    text: Joi.string().allow(""),
+    images: [Joi.string(), Joi.array()],
 };
 
 const validation = () => (req, res, next) => {
     const result = Joi.validate(req.body, schema);
 
-    if (result.error)
-        return res.status(400).send({ error: result.error.details[0].message });
-
+    if (result.error) {
+        throw { error: result.error.details[0].message };
+    }
     next();
 };
 

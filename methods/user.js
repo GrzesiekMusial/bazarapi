@@ -1,6 +1,8 @@
-const userCheck = async (newId, oldId) => {
+const userCheck = async (newId, oldId, res = false) => {
     const userValid = newId.toString() === oldId.toString() ? true : false;
-    if (!userValid) return res.status(403).send("Access denied!");
+    if (!userValid && !res) {
+        return res.status(403).send("Access denied!");
+    }
 };
 
 exports.userCheck = userCheck;

@@ -5,7 +5,6 @@ const notices = require("../routes/notices");
 const categories = require("../routes/categories");
 const users = require("../routes/users");
 const auth = require("../routes/auth");
-
 const error = require("../middleware/error");
 
 module.exports = function (app) {
@@ -16,6 +15,5 @@ module.exports = function (app) {
     app.use("/categories", categories);
     app.use("/users", users);
     app.use("/auth", auth);
-
     app.use(error);
 };

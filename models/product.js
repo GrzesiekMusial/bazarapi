@@ -12,8 +12,7 @@ const Product = mongoose.model(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
         },
-        // images: [{ type: String }],
-        images: [{ type: Object }],
+        images: [{ type: String }],
         date: { type: Date, default: Date.now },
         price: Number,
         title: { type: String, required: true, minlength: 3 },
@@ -28,13 +27,12 @@ const validateSchema = (product) => {
         date: Joi.date(),
         price: Joi.string(),
         title: Joi.string().required(),
-        text: Joi.string(),
+        text: Joi.string().allow(""),
         images: Joi.array().items(Joi.string()),
     };
 
     const result = Joi.validate(product, schema);
 
-    console.log(result);
     return result;
 };
 

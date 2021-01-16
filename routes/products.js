@@ -9,7 +9,7 @@ const { userCheck } = require("../methods/user");
 //GET PRODUCT
 router.get("/:id", async (req, res) => {
     const product = await Product.findById(req.params.id)
-        .populate("author", "name email login")
+        .populate("author", "login email")
         .populate("category");
 
     if (!product)
@@ -22,7 +22,7 @@ router.get("/:id", async (req, res) => {
 router.get("/", async (req, res) => {
     const result = await Product.find()
         .populate("category")
-        .populate("author", "name email login");
+        .populate("author", "login email");
     res.send(result);
 });
 
@@ -30,17 +30,18 @@ router.get("/", async (req, res) => {
 router.post("/", [auth, upload, validate.validation()], async (req, res) => {
     const newOne = req.body;
     newOne.price = parseFloat(newOne.price, 2);
-    console.log("FILES", req.files);
 
     newOne.date = Date.now();
     newOne.author = req.user._id;
+
     newOne.images = await imageFilter(req.files);
 
     const product = new Product(newOne);
     await product.validate();
     const result = await product.save();
+    const author = { _id: req.user._id, login: req.user.login };
 
-    res.status(201).send(result);
+    res.status(201).send({ item: result, author: author });
 });
 
 //EDIT PRODUCT
@@ -55,6 +56,7 @@ router.put("/:id", [auth, upload, validate.validation()], async (req, res) => {
 
     edit.date = old.date;
     edit.author = old.author;
+
     edit.images = await imageFilter(req.files, req.body.images, old.images);
 
     const result = await Product.findByIdAndUpdate(edit._id, edit, {
@@ -62,7 +64,8 @@ router.put("/:id", [auth, upload, validate.validation()], async (req, res) => {
         useFindAndModify: false,
     });
 
-    res.status(201).send(result);
+    const author = { _id: req.user._id, login: req.user.login };
+    res.status(201).send({ item: result, author: author });
 });
 
 //DELETE PRODUCT
@@ -74,7 +77,7 @@ router.delete("/:id", auth, async (req, res) => {
             .status(404)
             .send("Product with the givent id does not exist.");
 
-    await userCheck(req.user._id, product.author._id);
+    await userCheck(req.user._id, product.author._id, res);
 
     imageFilter([], [], product.images);
 

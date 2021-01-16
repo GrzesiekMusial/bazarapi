@@ -13,6 +13,21 @@ router.get("/me", auth, async (req, res) => {
     res.status(200).send(result);
 });
 
+//GET USERS
+router.get("/", async (req, res) => {
+    const result = await User.find().select("-password");
+    if (!result) return res.status(404);
+    res.status(200).send(result);
+});
+
+// GET PRODUCTS
+router.get("/", async (req, res) => {
+    const result = await Product.find()
+        .populate("category")
+        .populate("author", "login email");
+    res.send(result);
+});
+
 //SAVE USER
 router.post("/", async (req, res) => {
     const { error } = validateSchema(req.body);
@@ -31,7 +46,7 @@ router.post("/", async (req, res) => {
                 } already registered.`
             );
 
-    user = new User(_.pick(req.body, ["name", "login", "email", "password"]));
+    user = new User(_.pick(req.body, ["login", "email", "password"]));
 
     await user.validate();
 
