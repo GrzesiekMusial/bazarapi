@@ -16,4 +16,15 @@ router.get("/", async (req, res) => {
     res.send(result);
 });
 
+//SAVE NOTICE
+router.post("/", async (req, res) => {
+    const newOne = req.body;
+
+    const question = new Question(newOne);
+    await question.validate();
+    const result = await question.save();
+
+    res.status(201).send({ result });
+});
+
 module.exports = router;
